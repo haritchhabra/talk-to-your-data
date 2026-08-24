@@ -1,0 +1,19 @@
+# Dataset — not pushed to git
+data/*.csv
+
+# Secrets
+.env
+backend/.env
+
+# Python
+__pycache__/
+*.pyc
+backend/model.joblib
+.venv/
+venv/
+
+# Chroma persistence (if enabled later)
+chroma_db/
+
+# OS
+.DS_Store

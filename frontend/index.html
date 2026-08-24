@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Triage — Talk to your data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <header class="toolbar">
+    <div class="brand">
+      <svg class="brand-mark" width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M1 7H6" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/>
+        <path d="M6 7L13 1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/>
+        <path d="M6 7L13 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/>
+        <path d="M6 7L13 12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/>
+      </svg>
+      <span class="brand-name">Triage</span>
+      <span class="brand-divider" aria-hidden="true">/</span>
+      <span class="brand-context">Support workspace</span>
+    </div>
+    <div class="status" id="status">
+      <span id="statusText">Connecting</span>
+    </div>
+  </header>
+
+  <div class="instrument-strip" id="kpis" role="group" aria-label="Dataset summary">
+    <span class="metric"><span class="metric-value" id="kpiTotal">—</span><span class="metric-label">records</span></span>
+    <span class="metric-sep" aria-hidden="true">·</span>
+    <span class="metric"><span class="metric-value" id="kpiOpen">—</span><span class="metric-label">open</span></span>
+    <span class="metric-sep" aria-hidden="true">·</span>
+    <span class="metric"><span class="metric-value" id="kpiRes">—</span><span class="metric-label">avg resolution (hrs)</span></span>
+    <span class="metric-sep" aria-hidden="true">·</span>
+    <span class="metric"><span class="metric-value" id="kpiCsat">—</span><span class="metric-label">avg satisfaction /5</span></span>
+    <span class="metric-sep" aria-hidden="true">·</span>
+    <span class="metric"><span class="metric-value" id="kpiCritical">—</span><span class="metric-label">critical priority</span></span>
+  </div>
+
+  <main class="workspace">
+
+    <section class="composer">
+      <label class="composer-label" for="queryInput">Ask anything about this dataset</label>
+      <form id="queryForm" autocomplete="off">
+        <input
+          id="queryInput"
+          type="text"
+          placeholder="e.g. average resolution time by channel"
+          aria-label="Ask a question about the dataset"
+        />
+        <button type="submit" id="submitBtn">
+          <span>Ask</span>
+        </button>
+      </form>
+
+      <p class="status-line" id="statusLine" aria-live="polite">
+        <span class="status-line-cursor hidden" id="statusCursor" aria-hidden="true"></span>
+      </p>
+
+      <div class="chips" id="sampleChips">
+        <button class="chip" data-q="How many records are marked as Critical priority?">critical count</button>
+        <button class="chip" data-q="What is the average time to resolution by channel?">by channel</button>
+        <button class="chip" data-q="Show me record count by product purchased">by product</button>
+        <button class="chip" data-q="What kind of issues are customers reporting about battery life?">battery complaints</button>
+        <button class="chip" data-q="Predict satisfaction rating for a critical priority technical issue with slow first response">predict satisfaction</button>
+      </div>
+    </section>
+
+    <section class="tiles" id="tiles" aria-live="polite">
+      <article class="tile tile-text" id="tileText">
+        <header class="tile-head">
+          <span class="tile-label">Text answer</span>
+        </header>
+        <div class="tile-body" id="tileTextBody">
+          <p class="placeholder">Ask a question — the explanation always appears here.</p>
+        </div>
+      </article>
+
+      <article class="tile tile-numeric" id="tileNumeric">
+        <header class="tile-head">
+          <span class="tile-label">Number</span>
+        </header>
+        <div class="tile-body" id="tileNumericBody">
+          <p class="placeholder">Fills in when the question has a number to compute.</p>
+        </div>
+      </article>
+
+      <article class="tile tile-chart" id="tileChart">
+        <header class="tile-head">
+          <span class="tile-label">Breakdown</span>
+        </header>
+        <div class="tile-body" id="tileChartBody">
+          <p class="placeholder">Fills in when a trend or comparison would help.</p>
+        </div>
+      </article>
+    </section>
+
+    <details class="pipeline">
+      <summary>How Triage answers a question</summary>
+      <dl class="pipeline-list">
+        <div class="pipeline-row">
+          <dt>01 Classify</dt>
+          <dd>A pattern-based classifier reads the question and decides which components it needs. No model call for this step.</dd>
+        </div>
+        <div class="pipeline-row">
+          <dt>02 Route</dt>
+          <dd>Numeric questions go to direct computation, content questions go to retrieval, comparisons go to chart aggregation.</dd>
+        </div>
+        <div class="pipeline-row">
+          <dt>03 Compute</dt>
+          <dd>Answers are produced deterministically — a real aggregation, a vector search, or a trained model. Never invented.</dd>
+        </div>
+        <div class="pipeline-row">
+          <dt>04 Synthesize</dt>
+          <dd>The model writes the final explanation grounded in exactly what was computed, so the text can't contradict the numbers.</dd>
+        </div>
+      </dl>
+    </details>
+
+  </main>
+
+  <footer class="foot">
+    <span>Built on Groq · ChromaDB · scikit-learn · classical NLP routing · FastAPI</span>
+  </footer>
+
+  <script src="app.js?v=3"></script>
+</body>
+</html>
