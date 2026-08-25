@@ -16,8 +16,8 @@ Every question goes through the same four-stage pipeline:
 | **4. Synthesize** | An LLM (via Groq) writes the final explanation, but only from the facts already computed in stage 3  it is explicitly told not to invent numbers, so the text can't contradict the data. |
 
 The result: **text is always returned**, and **numeric**/**chart** are added only
-when the question calls for them. All three render in a fixed three-tile layout
-that never reshuffles between queries.
+when the question calls for them. 
+
 
 ## Why intent classification is NLP, not an LLM call
 
@@ -31,7 +31,7 @@ cost, instead of burning an LLM call just to make a routing decision.
 The classifier (`classify_intent_classical` in `backend/main.py`) matches the
 question against a small set of regex patterns per intent (aggregation
 language like "how many"/"average", chart language like "by channel"/"trend",
-prediction language like "predict"/"estimate", and content-lookup language
+prediction language like "predict"/"estimate", and content lookup language
 like "what issues"/"describe"). This cut LLM calls per query from up to three
 down to at most two.
 
@@ -40,16 +40,16 @@ down to at most two.
 The LLM is used for exactly two things: **generating the instructions for how
 to compute an answer** (a pandas expression, a chart spec, a set of retrieval
 attributes), and **writing the final explanation grounded in the result**. It
-never states a number itself. This distinction matters — if a numeric question
+never states a number itself. This distinction matters if a numeric question
 is routed straight through an LLM, it will happily hallucinate a
 plausible looking wrong number. Here, the number always comes from pandas
 actually running against the real dataframe; the LLM only decides *how* to
 look, never *what* it finds.
 
-Retrieval (ChromaDB, with a locally fit TF-IDF embedding — no external model
+Retrieval (ChromaDB, with a locally fit TF-IDF embedding no external model
 download required) is used only for the "lookup" intent: semantic questions
 over free-text fields like `Ticket Description` and `Resolution`. It is
-deliberately **not** used for counts or averages — retrieval returns
+deliberately **not** used for counts or averages retrieval returns
 similar-looking rows, not all matching rows, so it's the wrong tool for
 aggregation and would silently produce incorrect statistics.
 
